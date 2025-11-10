@@ -1,0 +1,8 @@
+smolagents
+openai
+ddgs
+bs4
+requests
+chromadb
+pdfplumber
+langchain_text_splitters
