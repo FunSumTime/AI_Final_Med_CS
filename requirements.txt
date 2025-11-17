@@ -6,3 +6,7 @@ requests
 chromadb
 pdfplumber
 langchain_text_splitters
+Flask
+bcrypt==4.0.1
+passlib
+sentence_transformers

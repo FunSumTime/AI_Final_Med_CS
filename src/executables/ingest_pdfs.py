@@ -1,5 +1,4 @@
-#!/usr/bin/env python3
-"""Ingests PDF documents from the raw data directory into a ChromaDB collection."""
+# ingest_pdfs.py  (whatever your file is called)
 
 from __future__ import annotations
 
@@ -83,14 +82,7 @@ def parse_args() -> ArgumentParser:
     return parser
 
 
-def main() -> None:
-    parser = parse_args()
-    args = parser.parse_args()
-
-    raw_dir = args.raw_dir
-    persist_dir = args.persist_dir
-    collection_name = args.collection
-
+def ingest_directory(raw_dir: Path, persist_dir: Path, collection_name: str) -> None:
     pdf_paths = sorted(raw_dir.glob("*.pdf"))
     if not pdf_paths:
         raise FileNotFoundError(f"No PDF files found in {raw_dir}")
@@ -103,8 +95,9 @@ def main() -> None:
         name=collection_name, embedding_function=embedding_fn
     )
 
-    if collection.count() > 0:
-        collection.delete(ids=collection.get()["ids"])
+    # you can decide if you want to wipe the collection or just add new docs
+    # if collection.count() > 0:
+    #     collection.delete(ids=collection.get()["ids"])
 
     total_chunks = 0
     total_pages = 0
@@ -128,6 +121,12 @@ def main() -> None:
         f"Completed PDF ingestion: {len(pdf_paths)} files, "
         f"{total_pages} pages, {total_chunks} chunks into '{collection_name}'."
     )
+
+
+def main() -> None:
+    parser = parse_args()
+    args = parser.parse_args()
+    ingest_directory(args.raw_dir, args.persist_dir, args.collection)
 
 
 if __name__ == "__main__":

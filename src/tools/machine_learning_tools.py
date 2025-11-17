@@ -1,58 +1,16 @@
 from smolagents import Tool, DuckDuckGoSearchTool
 from bs4 import BeautifulSoup
-import csv
 import requests
 
 
-# will take in three inputs, needed to add the nullable because it was messing with smolagents
-# the init will fill the rows to be of the csv file
-# then the forward will use the input from the AI to pick out what from the rows
-# then return them
-# class EventsCSVTool(Tool):
-#     name = "events_csv"
-#     description = ("Query Utah Tech events from events.csv. "
-#                    "Inputs: date(optional, YYYY-MM-DD), keywords(optional, comma-separated), "
-#                    "and limit(optional, default 5). Returns a concise list.")
-#     inputs = {
-#         "date": {"type": "string", "description": "YYYY-MM-DD or empty","nullable": True},
-#         "keywords": {"type": "string", "description": "e.g., 'football,science' or empty","nullable": True},
-#         "limit": {"type": "integer", "description": "max results, default 5","nullable": True}
-#     }
-#     output_type = "string"
-
-#     def __init__(self, csv_path="events.csv"):
-#         super().__init__()
-#         self.rows = []
-#         with open(csv_path, newline='', encoding="utf-8") as f:
-#             reader = csv.DictReader(f)
-#             for r in reader:
-#                 self.rows.append(r)
-#     def forward(self, date: str = "", keywords: str = "", limit: int = 5) -> str:
-#         items = self.rows
-#         if date:
-#             items = [r for r in items if r.get("date","").startswith(date)]
-#         if keywords:
-#             ks = [k.strip().lower() for k in keywords.split(",") if k.strip()]
-#             def hit(r):
-#                 blob = " ".join([r.get("tittle",""),r.get("location",""), r.get("category","")]).lower()
-#                 return any(k in blob for k in ks)
-#             items = [r for r in items if hit(r)]
-#         items = items[: (limit or 5)]
-#         if not items:
-#             return "No matching events found"
-#         lines = []
-#         for r in items:
-#             lines.append(f"- {r.get('date','')} | {r.get('title','')} @ {r.get('location','')} [{r.get('category','')}]")
-#         return "\n".join(lines)
-
-# # to make a more defined search for the duck duck go search engine dont need this in reality
-class MachineLearningSearchTool(Tool):
-    name = "Machine_Learning_Search_Tool"
+# computer science tool
+class ComputerScienceSearchTool(Tool):
+    name = "Computer_Science_Search_Tool"
     description = (
-        "Search for machine learning and image processing papers across research sites."
+        "Search for Computer Science and Machine Learning papers across technical research sites."
     )
     inputs = {
-        "question": {"type": "string", "description": "Natural-language research question"}
+        "question": {"type": "string", "description": "Computer Science question or research query."}
     }
     output_type = "string"
 
@@ -61,30 +19,68 @@ class MachineLearningSearchTool(Tool):
         self._ddg = DuckDuckGoSearchTool()
 
     def forward(self, question: str) -> str:
-        # Base filters for ML paper sources
+        # Research sources for CS / AI / ML
         research_sites = [
             "site:arxiv.org",
             "site:ieeexplore.ieee.org",
+            "site:acm.org",
             "site:springer.com",
-            "site:sciencedirect.com",
-            "site:nature.com",
+            # "site:sciencedirect.com",  returns paywall
             "site:scholar.google.com",
         ]
 
-        # Construct the combined site filter
         site_filter = " OR ".join(research_sites)
 
-        # Add your topic focus
+        # Focus terms for CS and AI
         topics = (
-            '"machine learning" "image processing" "deep learning" '
-            '"computer vision" "image classification"'
+            '"computer science" "algorithms" "machine learning" '
+            '"neural networks" "image classification" "data structures" '
+            '"AI research" "computer vision" "software engineering"'
         )
 
-        # Combine it all
         query = f"({site_filter}) {topics} {question}"
-
-        # Run the search
         return self._ddg(query)
+    
+    # med tool
+class MedicalSearchTool(Tool):
+    name = "Medical_Search_Tool"
+    description = (
+        "Search for Medical and Biomedical research papers across academic and healthcare databases."
+    )
+    inputs = {
+        "question": {"type": "string", "description": "Medical or healthcare-related research question."}
+    }
+    output_type = "string"
+
+    def __init__(self):
+        super().__init__()
+        self._ddg = DuckDuckGoSearchTool()
+
+    def forward(self, question: str) -> str:
+        # Medical and healthcare research sources
+        research_sites = [
+            "site:pubmed.ncbi.nlm.nih.gov",
+            "site:nature.com",
+            # "site:sciencedirect.com", returns paywall
+            "site:springer.com",
+            "site:nejm.org",
+            "site:who.int",
+            "site:cdc.gov",
+            "site:scholar.google.com",
+        ]
+
+        site_filter = " OR ".join(research_sites)
+
+        # Focus terms for medicine and health
+        topics = (
+            '"medicine" "healthcare" "clinical study" "biomedical" '
+            '"disease" "treatment" "diagnosis" "X-ray" "CT scan" '
+            '"ultrasound" "pneumonia" "medical imaging"'
+        )
+
+        query = f"({site_filter})  {topics} {question}"
+        return self._ddg(query)
+
 
 
 class ScrapePageTool(Tool):
