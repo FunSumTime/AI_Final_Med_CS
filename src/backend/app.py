@@ -1,7 +1,28 @@
-from flask import Flask, request,jsonify
+from flask import Flask, request,jsonify, g
 from db import DB
+from session_store import SessionStore
 
 app = Flask(__name__)
+session_store = SessionStore()
+
+def load_session_data():
+    auth_header = request.headers.get("Authorization")
+    if auth_header and auth_header.startswith("Bearer "):
+        sessionID = auth_header.removeprefix("Bearer ")
+    else:
+        sessionID = None
+    
+    if sessionID:
+        sesion_data = session_store.get_session_data(sessionID)
+        print("the session data is", sesion_data)
+    
+    if sessionID == None or sesion_data == None:
+        sessionID = session_store.create_session()
+        sesion_data = session_store.get_session_data(sessionID)
+    
+    g.session_id = sessionID
+    g.session_data = sesion_data
+
 
 # Preflight
 
@@ -10,16 +31,55 @@ def pre_user_by_email(email):
     return '', 204, {
         "Access-Control-Allow-Origin": "*",
         "Access-Control-Allow-Methods": "DELETE",
-        "Access-Control-Allow-Headers": "Content-Type"
+        "Access-Control-Allow-Headers": "Content-Type, Authorization"
     }
 
+@app.route("/sessions/settings",methods=["OPTIONS"])
+def do_preflight():
+    return '', 204, {
+        "Access-Control-Allow-Origin": "*",
+        "Access-Control-Allow-Methods": "GET,OPTIONS,PUT",
+        "Access-Control-Allow-Headers": "Content-Type, Authorization"
+    }
+
+@app.route("/sessions",methods=["OPTIONS"])
+def do_other_preflight():
+    return '', 204, {
+        "Access-Control-Allow-Origin": "*",
+        "Access-Control-Allow-Methods": "GET,OPTIONS,PUT,DELETE",
+        "Access-Control-Allow-Headers": "Content-Type, Authorization"
+    }
+
+@app.route("/sessions/settings", methods=["PUT"])
+def setsettings():
+    load_session_data()
+    data = request.form["data"]
+    g.session_data["data"] = data
+    return "Data Saved", 200, {"Access-Control-Allow-Origin": "*"}
+
+@app.route("/sessions", methods=["DELETE"])
+def deleteSessionData():
+    load_session_data()
+    if "data" in g.session_data:
+        del g.session_data["data"]
+    return "Deleted", 200, {"Access-Control-Allow-Origin": "*"}
+
+@app.route("/sessions", methods=["GET"])
+def retrieveSession():
+    load_session_data()
+    return {
+        "id": g.session_id,
+        "data": g.session_data
+    }, 200, {"Access-Control-Allow-Origin": "*"}
 
 # Routes
 
 # POST a user (expects form fields: name/username, email, password)
+# give them a session
 @app.route("/users", methods=["POST"])
 def create_user():
     db = DB("Users.db")
+    # might need to add firstname and last name
     d = {
         "username": request.form.get('username'),
         "email": request.form.get('email'),
@@ -40,6 +100,9 @@ def create_user():
 
     return f"Created {uid}", 201, {"Access-Control-Allow-Origin": "*"}
 
+# add authurization and sessions
+
+
 # GET a user by id (no password returned)
 @app.route("/users/<int:id>", methods=["GET"])
 def get_user(id):
@@ -48,6 +111,7 @@ def get_user(id):
     if not user:
         return "Not found", 404, {"Access-Control-Allow-Origin": "*"}
     return user, 200, {"Access-Control-Allow-Origin": "*"}
+
 
 # DELETE a user by email (also deletes related interactions via FK cascade)
 @app.route("/users/<string:email>", methods=["DELETE"])
@@ -58,6 +122,8 @@ def delete_user(email):
         return "Not found", 404, {"Access-Control-Allow-Origin": "*"}
     return "Deleted", 200, {"Access-Control-Allow-Origin": "*"}
 
+
+# post a users query
 # POST a query/interaction (expects form: email, query, topic: 'CS' or 'MED')
 @app.route("/interactions", methods=["POST"])
 def post_interaction():
@@ -80,7 +146,7 @@ def post_interaction():
     return "Logged", 201, {"Access-Control-Allow-Origin": "*"}
 
 
-
+# route for the model
 @app.route("/interactions/history/", methods=["GET"])
 def interactions_history():
     db = DB("Users.db")

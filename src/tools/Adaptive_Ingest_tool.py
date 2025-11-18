@@ -124,11 +124,11 @@ class IngestHtmlTextTool(Tool):
 
     def __init__(self):
         super().__init__()
+        # get the connection to chroma db
         self.client = chromadb.PersistentClient(path=str(VECTOR_STORE_DIR))
         self.embedding_fn = SentenceTransformerEmbeddingFunction(
             model_name="sentence-transformers/all-MiniLM-L6-v2"
         )
-        # collections match your retrievers / pdf ingest
         self.cs_col = self.client.get_or_create_collection(
             name=CS_COLLECTION,
             embedding_function=self.embedding_fn,
