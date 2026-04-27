@@ -1,0 +1,6 @@
+/venv
+/src/vector_store
+.env
+/src/tools/__pycache__
+/src/backend/__pycache__
+/src/executables/__pycache__

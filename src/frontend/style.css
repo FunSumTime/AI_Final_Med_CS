@@ -1,0 +1,435 @@
+/* ---------- Banner ---------- */
+body {
+  margin: 0;
+}
+#banner {
+  width: 100%;
+  background-color: #4c8bf5;
+  color: white;
+  padding: 15px 25px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+#banner h1 {
+  margin: 0;
+  font-size: 26px;
+}
+
+#Toggle_login {
+  padding: 8px 15px;
+  background-color: white;
+  border: none;
+  border-radius: 6px;
+  margin-right: 30px;
+  cursor: pointer;
+  font-weight: bold;
+}
+
+#Toggle_login:hover {
+  background-color: #e5e5e5;
+}
+
+/* ---------- Modal Background ---------- */
+.modal {
+  display: none; /* hidden by default */
+  position: fixed;
+  z-index: 1000;
+
+  top: 0;
+  left: 0;
+
+  width: 100%;
+  height: 100%;
+
+  background-color: rgba(0, 0, 0, 0.4);
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+/* ---------- Modal Box ---------- */
+.modal-content {
+  position: fixed;
+  top: 30%;
+  right: 40%;
+
+  background-color: #fff;
+  width: 350px;
+  padding: 25px;
+  border-radius: 10px;
+  box-shadow: 0px 5px 18px rgba(0, 0, 0, 0.2);
+
+  display: flex;
+  flex-direction: column;
+  animation: fadeIn 0.25s ease-in-out;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+/* ---------- Close Button ---------- */
+.close-button {
+  position: absolute;
+  margin-left: 295px;
+  margin-top: -10px;
+
+  width: 22px;
+  height: 22px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  cursor: pointer;
+  background-color: #d9534f;
+  color: white;
+  border-radius: 6px;
+  font-weight: bold;
+}
+
+.close-button:hover {
+  background-color: #c9302c;
+}
+
+/* ---------- Form ---------- */
+form {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+input {
+  padding: 8px;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+}
+
+button[type="submit"] {
+  margin-top: 10px;
+  padding: 10px;
+  background-color: #4c8bf5;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+#login {
+  margin-top: 10px;
+  padding: 10px;
+  background-color: #4c8bf5;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+}
+#login:hover {
+  background-color: #3a73d6;
+}
+
+button[type="submit"]:hover {
+  background-color: #3a73d6;
+}
+
+.hidden {
+  display: none;
+}
+
+/* Chat panel container */
+.chat-panel {
+  max-width: 800px;
+  height: 70vh;
+  margin: 24px auto;
+  border: 1px solid #ddd;
+  border-radius: 12px;
+  background-color: #ffffff;
+  display: flex;
+  display: none;
+
+  flex-direction: column;
+  overflow: hidden;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.06);
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
+    sans-serif;
+}
+.link-button {
+  border: none;
+  background: none;
+  color: #2563eb;
+  padding: 0;
+  margin: 0;
+  cursor: pointer;
+  text-decoration: underline;
+  font: inherit;
+}
+
+/* Header */
+.chat-header {
+  padding: 12px 16px;
+  border-bottom: 1px solid #eee;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background-color: #f8fafc;
+}
+
+.chat-title {
+  margin: 0;
+  font-size: 18px;
+  font-weight: 600;
+}
+
+.chat-user-email {
+  margin-top: 2px;
+  font-size: 13px;
+  color: #64748b;
+}
+
+/* Topic toggle buttons */
+.topic-toggle {
+  display: inline-flex;
+  gap: 8px;
+  background-color: #e2e8f0;
+  padding: 4px;
+  border-radius: 999px;
+}
+
+.topic-btn {
+  border: none;
+  padding: 6px 14px;
+  border-radius: 999px;
+  font-size: 13px;
+  background-color: transparent;
+  cursor: pointer;
+  color: #475569;
+}
+
+.topic-btn.active {
+  background-color: #ffffff;
+  color: #0f172a;
+  box-shadow: 0 1px 4px rgba(15, 23, 42, 0.18);
+}
+
+/* Messages area */
+.chat-messages {
+  flex: 1;
+  padding: 12px 16px;
+  overflow-y: auto;
+  background-color: #f9fafb;
+}
+
+/* Message bubbles */
+.message-row {
+  margin-bottom: 10px;
+  display: flex;
+}
+
+.message-row.user {
+  justify-content: flex-end;
+}
+
+.message-row.assistant {
+  justify-content: flex-start;
+}
+
+.message-bubble {
+  max-width: 75%;
+  padding: 8px 12px;
+  border-radius: 12px;
+  font-size: 14px;
+  line-height: 1.4;
+  white-space: pre-wrap;
+}
+
+.message-row.user .message-bubble {
+  background-color: #2563eb;
+  color: white;
+  border-bottom-right-radius: 2px;
+}
+
+.message-row.assistant .message-bubble {
+  background-color: #e5e7eb;
+  color: #111827;
+  border-bottom-left-radius: 2px;
+}
+
+/* Topic tag in bubble (optional) */
+.message-topic-tag {
+  display: inline-block;
+  margin-bottom: 4px;
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: #64748b;
+}
+
+/* Input row */
+.chat-input-row {
+  display: flex;
+  gap: 8px;
+  padding: 10px 12px;
+  border-top: 1px solid #e5e7eb;
+  background-color: #ffffff;
+}
+
+.chat-input {
+  flex: 1;
+  resize: none;
+  border-radius: 8px;
+  border: 1px solid #d1d5db;
+  padding: 8px 10px;
+  font-size: 14px;
+  outline: none;
+}
+
+.chat-input:focus {
+  border-color: #2563eb;
+  box-shadow: 0 0 0 1px rgba(37, 99, 235, 0.15);
+}
+
+.chat-send-btn {
+  padding: 0 18px;
+  border-radius: 8px;
+  border: none;
+  background-color: #2563eb;
+  color: #ffffff;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+}
+
+.chat-send-btn:hover {
+  background-color: #1d4ed8;
+}
+
+.chat-send-btn:disabled {
+  opacity: 0.6;
+  cursor: default;
+}
+
+.typing-bubble {
+  font-style: italic;
+  color: #6b7280;
+  opacity: 0.8;
+}
+.typing-dots::after {
+  content: "";
+  display: inline-block;
+  animation: dots 1s infinite steps(3);
+}
+
+@keyframes dots {
+  0% {
+    content: "";
+  }
+  33% {
+    content: ".";
+  }
+  66% {
+    content: "..";
+  }
+  100% {
+    content: "...";
+  }
+}
+
+username-group {
+  display: flex;
+  flex-direction: column;
+  gap: 4px; /* small space between label and input */
+}
+
+/* Ensure the username input stretches full width */
+#username-group input {
+  width: 100%;
+  box-sizing: border-box;
+}
+
+/* Toast container at top center */
+#toast-container {
+  position: fixed;
+  top: 16px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 9999;
+}
+
+/* Base toast style */
+.toast {
+  min-width: 260px;
+  max-width: 420px;
+  padding: 10px 16px;
+  margin: 0 auto 8px auto;
+  border-radius: 8px;
+  color: #fff;
+  font-size: 14px;
+  text-align: center;
+  box-shadow: 0 4px 10px rgba(15, 23, 42, 0.25);
+  opacity: 0;
+  transform: translateY(-10px);
+  transition: opacity 0.2s ease-out, transform 0.2s ease-out;
+}
+
+/* Success = green */
+.toast-success {
+  background-color: #16a34a;
+}
+
+/* Error = red */
+.toast-error {
+  background-color: #dc2626;
+}
+
+/* when we show it */
+.toast.show {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+#mode-toggle {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  padding: 12px;
+}
+
+#mode-toggle button {
+  padding: 8px 14px;
+  border-radius: 6px;
+  border: 1px solid #4b8bff;
+  background: white;
+  color: #4b8bff;
+  cursor: pointer;
+  font-weight: 500;
+}
+
+#quiz-view {
+  max-width: 700px;
+  margin: 20px auto;
+  background: white;
+  padding: 20px;
+  border-radius: 8px;
+  border: 1px solid #ddd;
+}
+
+.quiz-question {
+  background: #f0f7ff;
+  padding: 10px;
+  border-radius: 4px;
+  margin-bottom: 10px;
+}
+
+.hidden {
+  display: none;
+}

@@ -1,0 +1,121 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="style.css" />
+    <title>Document</title>
+  </head>
+  <body>
+    <div id="banner">
+      <h1>Jarvis Tutor</h1>
+      <button id="Toggle_login">Sign In</button>
+    </div>
+    <div id="loginModal" class="modal">
+      <div class="modal-content">
+        <span class="close-button" onclick="closeLoginModal()">&times;</span>
+        <form id="login-form">
+          <h2 id="auth-tittle">Sign In</h2>
+
+          <label for="email">Email</label>
+          <input type="email" id="email" name="email" required />
+          <div id="username-group">
+            <label for="username">Username:</label>
+            <input type="text" id="username" name="username" required />
+          </div>
+          <label for="password">Password:</label>
+          <input type="password" id="password" name="password" required />
+          <button id="login" type="submit">Sign In</button>
+          <p id="auth-toggle-text">
+            Already have an account?
+            <button type="button" id="toggle-auth" class="link-button">
+              Log In
+            </button>
+          </p>
+        </form>
+      </div>
+    </div>
+    <div id="mode-toggle">
+      <button id="chat-mode-btn">Chat Mode</button>
+      <button id="quiz-mode-btn">Quiz Mode</button>
+    </div>
+    <!-- Chat panel: hidden until user is logged in -->
+    <section id="chat-panel" class="chat-panel hidden">
+      <div class="chat-header">
+        <div>
+          <h2 class="chat-title">Learning Coach</h2>
+          <div class="chat-user-email">
+            Logged in as: <span id="chat-user-label"></span>
+          </div>
+        </div>
+
+        <div class="topic-toggle">
+          <button
+            type="button"
+            class="topic-btn active"
+            data-topic="CS"
+            id="topic-cs-btn"
+          >
+            CS
+          </button>
+          <button
+            type="button"
+            class="topic-btn"
+            data-topic="MED"
+            id="topic-med-btn"
+          >
+            MED
+          </button>
+        </div>
+      </div>
+
+      <div id="chat-messages" class="chat-messages">
+        <!-- Messages will be injected here -->
+      </div>
+
+      <form id="chat-form" class="chat-input-row">
+        <textarea
+          id="chat-input"
+          class="chat-input"
+          rows="2"
+          placeholder="Ask a CS or MED question..."
+        ></textarea>
+        <button type="button" class="chat-send-btn">Send</button>
+      </form>
+    </section>
+    <!-- quiz view -->
+    <div id="quiz-view" class="hidden">
+      <h2>Quiz Mode</h2>
+
+      <label>
+        Topic:
+        <select id="quiz-topic">
+          <option value="CS">Computer Science</option>
+          <option value="MED">Medical</option>
+        </select>
+      </label>
+
+      <label>
+        What should this quiz focus on?
+        <input
+          type="text"
+          id="quiz-request-text"
+          placeholder="e.g. recursion basics, OS processes, medical terminology"
+        />
+      </label>
+
+      <label>
+        <input type="checkbox" id="include-history" />
+        Use my past queries/quizzes to personalize the quiz
+      </label>
+
+      <button id="request-quiz-btn">Get Quiz</button>
+
+      <h3>Your saved quizzes</h3>
+      <div id="quiz-list"></div>
+
+      <div id="quiz-container"></div>
+    </div>
+  </body>
+  <script src="app.js"></script>
+</html>
